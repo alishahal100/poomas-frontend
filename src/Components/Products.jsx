@@ -84,17 +84,9 @@ const ProductPage = ({ location }) => {
       filteredProducts = filteredProducts.filter(product => product.location === selectedCity);
     }
   
-    // Filter by selected features
-    if (Object.keys(selectedFeatures).length > 0) {
-      filteredProducts = filteredProducts.filter(product => {
-        for (const [feature, value] of Object.entries(selectedFeatures)) {
-          if (product.features[feature] !== value) {
-            return false;
-          }
-        }
-        return true;
-      });
-    }
+  
+
+   
   
     setFilteredProducts(filteredProducts);
   };
@@ -107,37 +99,45 @@ const ProductPage = ({ location }) => {
     slidesToScroll: 1
   };
 
+  console.log("fuel", selectedFeatures);
+
   // Additional filter options for vehicles
-  const vehicleFilterOptions = (
-    <>
+ // Additional filter options for vehicles
+const vehicleFilterOptions = (
+  <>
     <select
       className="border border-gray-300 rounded-md p-2 mr-2"
-      value={selectedFeatures.seatingCapacity || ""}
-      onChange={(e) => setSelectedFeatures({ ...selectedFeatures, seatingCapacity: e.target.value })}
+      value={selectedFeatures.manufacturer || ""}
+      onChange={(e) => setSelectedFeatures({ ...selectedFeatures, manufacturer: e.target.value })}
     >
-      <option value="">Seating Capacity</option>
-      {/* Add seating capacity options */}
+      <option value="">Select Manufacturer</option>
+      {/* Extract and map unique manufacturer names from products array */}
+      {filteredProducts.map(product => product.category === 'vehicles' && product.features.manufacturer)
+                     .filter((value, index, self) => self.indexOf(value) === index)
+                     .map((manufacturer, index) => (
+        <option key={index} value={manufacturer}>{manufacturer}</option>
+      ))}
     </select>
     <select
       className="border border-gray-300 rounded-md p-2 mr-2"
       value={selectedFeatures.fuelType || ""}
       onChange={(e) => setSelectedFeatures({ ...selectedFeatures, fuelType: e.target.value })}
     >
-      <option value="">Fuel Type</option>
-      {/* Map over options for fuelType from allFeatureOptions */}
-      {selectedFeatures.fuelType && selectedFeatures.fuelType.map((option, index) => (
-        <option key={index} value={option}>{option}</option>
+      <option value="">Select Fuel Type</option>
+      {/* Extract and map unique fuel types from products array */}
+      {filteredProducts.map(product => product.category === 'vehicles' && product.features.fuelType)
+                     .filter((value, index, self) => self.indexOf(value) === index)
+                     .map((fuelType, index) => (
+        <option key={index} value={fuelType}>{fuelType}</option>
       ))}
     </select>
-    {/* Add more filter options for vehicles */}
   </>
-  
-  );
+);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="flex flex-col gap-10 items-center px-4 py-8">
       <Navbar />
-      <div className="flex mt-[200px] justify-between items-center mb-4">
+      <div className="mt-[100px] lg:min-w-[800px] border border-solid border-black border-[2px] rounded-md  flex justify-center items-center h-[100px]">
         <div>
           <select
             className="border border-gray-300 rounded-md p-2 mr-2"
@@ -179,30 +179,41 @@ const ProductPage = ({ location }) => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
-              <div key={product._id} className="bg-white shadow-md rounded-lg p-4">
+              <div key={product._id} className="bg-white shadow-md flex flex-col gap-5 rounded-lg p-4">
                 <Slider {...settings}>
                   {product.images.map((image, index) => (
-                     <img
-                     key={index}
-                     src={`${import.meta.env.VITE_REACT_APP_IMAGE_ENDPOINT}/${image}`}
-                     alt={product.name}
-                     className="object-cover"
-                   />
+                    <img
+                      key={index}
+                      src={`${import.meta.env.VITE_REACT_APP_IMAGE_ENDPOINT}/${image}`}
+                      alt={product.name}
+                      className="object-cover h-48 w-full"
+                    />
+                  ))}
+                  {product.videos.map((video, index) => (
+                    <video
+                      key={index}
+                      src={`${import.meta.env.VITE_REACT_APP_VIDEO_ENDPOINT}/${video}`}
+                      alt={product.name}
+                      className="object-cover h-48 w-full"
+                      controls
+                    />
                   ))}
                 </Slider>
-                <h2 className="text-lg font-semibold">{product.name}</h2>
-                <p className="text-sm text-gray-500">{product.description}</p>
-                <p className="text-lg font-bold mt-2">${product.Price}</p>
                 <div>
-                  <h3 className="text-base font-medium text-gray-900">Features:</h3>
-                  <ul className="text-sm text-gray-500">
-                    {Object.entries(product.features).map(([key, value]) => (
-                      <li key={key}>
-                        <span className="font-semibold">{key}: </span>
-                        {value}
-                      </li>
-                    ))}
-                  </ul>
+                  <h2 className="text-lg font-semibold">{product.name}</h2>
+                  <p className="text-sm text-gray-500">{product.description}</p>
+                  <p className="text-lg font-bold mt-2">{product.Price} AED</p>
+                  <div>
+                    <h3 className="text-base font-medium text-gray-900">Features:</h3>
+                    <ul className="text-sm text-gray-500">
+                      {Object.entries(product.features).map(([key, value]) => (
+                        <li key={key}>
+                          <span className="font-semibold">{key}: </span>
+                          {value}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             ))}
