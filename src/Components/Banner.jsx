@@ -89,10 +89,10 @@ const Banner = () => {
         <div>
           <h1 className="text-3xl font-bold">Categories</h1>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-24">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-24">
         {PRODUCT_CATEGORIES.map((category, index) => (
-          <div key={index} className=" shadow-md px-10 py-4 flex gap-5 cursor-pointer items-center justify-center" onClick={() => handleCategoryClick(category.value)}>
-            <img src={category.img} alt={category.label} width={100} height={90} />
+          <div key={index} className=" shadow-md px-10 py-4 flex flex-col gap-5 cursor-pointer items-center justify-center" onClick={() => handleCategoryClick(category.value)}>
+            <img src={category.img} alt={category.label} className=' w-auto h-20 lg:w-auto ' />
             <p className="text-md font-semibold mt-4">{category.label}</p>
           </div>
         ))}

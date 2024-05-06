@@ -137,7 +137,7 @@ const vehicleFilterOptions = (
   return (
     <div className="flex flex-col gap-10 items-center px-4 py-8">
       <Navbar />
-      <div className="mt-[100px] lg:min-w-[800px] border border-solid border-black border-[2px] rounded-md  flex justify-center items-center h-[100px]">
+      <div className="mt-[100px]  flex flex-col overflow-x-auto lg:overflow-y-hidden overflow-y-scroll border-solid border-black border-[2px] rounded-md   justify-center items-center h-auto">
         <div>
           <select
             className="border border-gray-300 rounded-md p-2 mr-2"
