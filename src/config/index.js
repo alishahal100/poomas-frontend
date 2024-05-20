@@ -1,4 +1,48 @@
 export const PRODUCT_CATEGORIES = [
+  {
+    label: 'Vehicles',
+    value: 'vehicles',
+    img: '/sedan.png',
+    featured: [
+      {
+        name: 'Used Cars',
+        href: '/listings?category=vehicles&type=used&vehicle_type=car',
+        imageSrc: 'https://placekitten.com/300/203', // Replace with actual image URL
+      },
+      {
+        name: 'Motorcycles',
+        href: '/listings?category=vehicles&type=all&vehicle_type=motorcycle',
+        imageSrc: 'https://placekitten.com/300/204', // Replace with actual image URL
+      },
+      {
+        name: 'Boats',
+        href: '/listings?category=vehicles&type=all&vehicle_type=boat',
+        imageSrc: 'https://placekitten.com/300/205', // Replace with actual image URL
+      },
+    ],
+  },
+  {
+    label: 'Products',
+    value: 'Products',
+    img: '/cassette.png',
+    featured: [
+      {
+        name: 'Used Cars',
+        href: '/listings?category=vehicles&type=used&vehicle_type=car',
+        imageSrc: 'https://placekitten.com/300/203', // Replace with actual image URL
+      },
+      {
+        name: 'Motorcycles',
+        href: '/listings?category=vehicles&type=all&vehicle_type=motorcycle',
+        imageSrc: 'https://placekitten.com/300/204', // Replace with actual image URL
+      },
+      {
+        name: 'Boats',
+        href: '/listings?category=vehicles&type=all&vehicle_type=boat',
+        imageSrc: 'https://placekitten.com/300/205', // Replace with actual image URL
+      },
+    ],
+  },
     {
       label: 'Apartments',
       value: 'apartments',
@@ -43,50 +87,7 @@ export const PRODUCT_CATEGORIES = [
         },
       ],
     },
-    {
-      label: 'Vehicles',
-      value: 'vehicles',
-      img: '/sedan.png',
-      featured: [
-        {
-          name: 'Used Cars',
-          href: '/listings?category=vehicles&type=used&vehicle_type=car',
-          imageSrc: 'https://placekitten.com/300/203', // Replace with actual image URL
-        },
-        {
-          name: 'Motorcycles',
-          href: '/listings?category=vehicles&type=all&vehicle_type=motorcycle',
-          imageSrc: 'https://placekitten.com/300/204', // Replace with actual image URL
-        },
-        {
-          name: 'Boats',
-          href: '/listings?category=vehicles&type=all&vehicle_type=boat',
-          imageSrc: 'https://placekitten.com/300/205', // Replace with actual image URL
-        },
-      ],
-    },
-    {
-      label: 'Bike Accessories',
-      value: 'Bike Accessories',
-      img: '/cassette.png',
-      featured: [
-        {
-          name: 'Used Cars',
-          href: '/listings?category=vehicles&type=used&vehicle_type=car',
-          imageSrc: 'https://placekitten.com/300/203', // Replace with actual image URL
-        },
-        {
-          name: 'Motorcycles',
-          href: '/listings?category=vehicles&type=all&vehicle_type=motorcycle',
-          imageSrc: 'https://placekitten.com/300/204', // Replace with actual image URL
-        },
-        {
-          name: 'Boats',
-          href: '/listings?category=vehicles&type=all&vehicle_type=boat',
-          imageSrc: 'https://placekitten.com/300/205', // Replace with actual image URL
-        },
-      ],
-    },
+    
     // Add more categories as needed...
   ];
   

@@ -85,13 +85,13 @@ const AddProduct = () => {
           <option value="vehicles">Vehicles</option>
           <option value="apartments">Apartments</option>
           <option value="shops">Shops</option>
-          <option value="bike_accessories">Bike Accessories</option>
+          <option value="products">Products</option>
         </select>
         
         {/* Render feature input fields based on selected category */}
         {category === 'vehicles' && (
   <>
-    <input className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="number" placeholder="Manufacturer Name" onChange={(e) => handleFeatureChange('ManufacturerName', e.target.value)} />
+    <input className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="text" placeholder="Manufacturer Name" onChange={(e) => handleFeatureChange('ManufacturerName', e.target.value)} />
     <input className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="number" placeholder="Seating Capacity" onChange={(e) => handleFeatureChange('seatingCapacity', e.target.value)} />
     <input className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="number" placeholder="Kilometers" onChange={(e) => handleFeatureChange('Kilometers', e.target.value)} />
     <input className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="text" placeholder="Fuel Type" onChange={(e) => handleFeatureChange('fuelType', e.target.value)} />
@@ -106,7 +106,32 @@ const AddProduct = () => {
 )}
         {category === 'apartments' && (
           <>
+          <label htmlFor="">
+          <span className="text-gray-700">Number of Rooms</span>
             <input className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="text" placeholder="Number of Rooms" onChange={(e) => handleFeatureChange('numberOfRooms', e.target.value)} />
+          </label>
+          <label htmlFor="">
+          <span className="text-gray-700">Property Type</span>
+            <input className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="text" placeholder="eg: villas , flats   " onChange={(e) => handleFeatureChange('PropertyType', e.target.value)} />
+          </label>
+               {/* Add more feature fields as needed */}
+          </>
+        )}
+        {category === 'shops' && (
+          <>
+          <label htmlFor="">
+          <span className="text-gray-700">Shop Type</span>
+            <input className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="text" placeholder="eg : supermarket , electronics" onChange={(e) => handleFeatureChange('ShopType', e.target.value)} />
+          </label>
+               {/* Add more feature fields as needed */}
+          </>
+        )}
+        {category === 'products' && (
+          <>
+          <label htmlFor="">
+          <span className="text-gray-700">Product Type</span>
+            <input className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="text" placeholder="eg : electronics, automobile" onChange={(e) => handleFeatureChange('ProductType', e.target.value)} />
+          </label>
                {/* Add more feature fields as needed */}
           </>
         )}

@@ -75,19 +75,20 @@ const Banner = () => {
             className="rounded-md border border-gray-300 px-4 py-2"
           />
           {searchResults.length > 0 && (
-            <ul>
+            <ul className='flex flex-col gap-3 text-start'>
               {searchResults.map((product) => (
-                <li key={product._id} onClick={() => handleSearchResultClick(product)}>
+                <li className='font-semibold ' key={product._id} onClick={() => handleSearchResultClick(product)}>
                   {product.name}
                 </li>
               ))}
             </ul>
           )}
+          <p><a href="/products" className=' font-medium text-blue-600'>See all Products &rarr;</a></p>
         </div>
       </div>
       <section className="w-full h-auto  flex flex-col gap-5  justify-center ml-auto">
         <div>
-          <h1 className="text-3xl font-bold">Categories</h1>
+          <h1 className="text-3xl font-bold text-center">Categories</h1>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-24">
         {PRODUCT_CATEGORIES.map((category, index) => (
@@ -101,10 +102,10 @@ const Banner = () => {
       </section>
       <section className="border-t border-gray-200 bg-gray-50 px-5">
         <div className="py-20">
-          <div className="grid grid-cols-1  sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-3 lg:gap-x-1 lg:gap-y-0">
+          <div className="grid grid-cols-1  sm:grid-cols-2 sm:gap-x-6  lg:grid-cols-3 lg:gap-x-1 lg:gap-y-0">
             {perks.map((perk) => (
               <div key={perk.name} className="text-center md:flex md:items-start md:text-left lg:block lg:text-center">
-                <div className="md:flex-shrink-0 flex justify-center">
+                <div className="md:flex-shrink-0 flex  justify-center">
                   <div className="h-16 w-16 flex items-center justify-center rounded-full bg-blue-100 text-blue-900">
                     {<perk.Icon className="w-1/3 h-1/3" />}
                   </div>

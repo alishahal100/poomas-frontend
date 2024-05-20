@@ -13,6 +13,7 @@ import AddProduct from './Components/Dashboard/AddProduct'
 import SellerSignup from './Components/auth/seller/Signup'
 import SellerDashboard from './Components/Dashboard/SellerDashboard'
 import ProductPage from './Components/Products'
+import ProductDetails from './Components/productdetails'
 function App() {
   
 
@@ -30,7 +31,7 @@ function App() {
           <Route path='/seller-dashboard' element={<SellerDashboard/>} />
           <Route path='/add-product' element={<AddProduct/>} />
           <Route path='/products' element={<ProductPage location={location} />} />
-          
+          <Route path="/product/:id" component={<ProductDetails/>} />
           
         </Routes>
       </Router>

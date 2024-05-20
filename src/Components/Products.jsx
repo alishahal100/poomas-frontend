@@ -4,6 +4,8 @@ import Navbar from "./Navbar";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Footer from "./footer";
+import { useNavigate } from "react-router-dom";
 
 const ProductPage = ({ location }) => {
   const [products, setProducts] = useState([]);
@@ -16,6 +18,7 @@ const ProductPage = ({ location }) => {
   const [allCities, setAllCities] = useState([]);
   const [allPriceRanges, setAllPriceRanges] = useState([]);
   const query = new URLSearchParams(location.search).get("query");
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +32,7 @@ const ProductPage = ({ location }) => {
         const response = await axios.get(endpoint);
         const filteredData = response.data.filter((product) => product.isApproved);
         setProducts(filteredData);
+        console.log("video", products.map((video) => video.videos));
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -64,12 +68,12 @@ const ProductPage = ({ location }) => {
 
   const applyFilters = () => {
     let filteredProducts = [...products];
-  
+
     // Filter by category
     if (selectedCategory) {
       filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
     }
-  
+
     // Filter by price range
     if (selectedPrice) {
       const [minPrice, maxPrice] = selectedPrice.split('-').map(Number);
@@ -78,16 +82,22 @@ const ProductPage = ({ location }) => {
         return productPrice >= minPrice && productPrice <= maxPrice;
       });
     }
-  
+
     // Filter by city
     if (selectedCity) {
       filteredProducts = filteredProducts.filter(product => product.location === selectedCity);
     }
-  
-  
 
-   
-  
+    // Filter by selected features for vehicles
+    if (selectedCategory === 'vehicles') {
+      if (selectedFeatures.ManufacturerName) {
+        filteredProducts = filteredProducts.filter(product => product.features.ManufacturerName === selectedFeatures.ManufacturerName);
+      }
+      if (selectedFeatures.fuelType) {
+        filteredProducts = filteredProducts.filter(product => product.features.fuelType === selectedFeatures.fuelType);
+      }
+    }
+
     setFilteredProducts(filteredProducts);
   };
 
@@ -101,43 +111,122 @@ const ProductPage = ({ location }) => {
 
   console.log("fuel", selectedFeatures);
 
-  // Additional filter options for vehicles
- // Additional filter options for vehicles
-const vehicleFilterOptions = (
-  <>
-    <select
-      className="border border-gray-300 rounded-md p-2 mr-2"
-      value={selectedFeatures.manufacturer || ""}
-      onChange={(e) => setSelectedFeatures({ ...selectedFeatures, manufacturer: e.target.value })}
-    >
-      <option value="">Select Manufacturer</option>
-      {/* Extract and map unique manufacturer names from products array */}
-      {filteredProducts.map(product => product.category === 'vehicles' && product.features.manufacturer)
-                     .filter((value, index, self) => self.indexOf(value) === index)
-                     .map((manufacturer, index) => (
-        <option key={index} value={manufacturer}>{manufacturer}</option>
-      ))}
-    </select>
-    <select
-      className="border border-gray-300 rounded-md p-2 mr-2"
-      value={selectedFeatures.fuelType || ""}
-      onChange={(e) => setSelectedFeatures({ ...selectedFeatures, fuelType: e.target.value })}
-    >
-      <option value="">Select Fuel Type</option>
-      {/* Extract and map unique fuel types from products array */}
-      {filteredProducts.map(product => product.category === 'vehicles' && product.features.fuelType)
-                     .filter((value, index, self) => self.indexOf(value) === index)
-                     .map((fuelType, index) => (
-        <option key={index} value={fuelType}>{fuelType}</option>
-      ))}
-    </select>
-  </>
-);
+  const vehicleFilterOptions = (
+    <>
+      <select
+        className="border border-gray-300 rounded-md p-2 mr-2"
+        value={selectedFeatures.ManufacturerName || ""}
+        onChange={(e) => setSelectedFeatures({ ...selectedFeatures, ManufacturerName: e.target.value })}
+      >
+        <option value="">Select Manufacturer</option>
+        {/* Extract and map unique manufacturer names from products array */}
+        {products
+          .filter(product => product.category === 'vehicles' && product.features.ManufacturerName)
+          .map(product => product.features.ManufacturerName)
+          .filter((value, index, self) => self.indexOf(value) === index)
+          .map((manufacturer, index) => (
+            <option key={index} value={manufacturer}>{manufacturer}</option>
+          ))}
+      </select>
+      <select
+        className="border border-gray-300 rounded-md p-2 mr-2"
+        value={selectedFeatures.fuelType || ""}
+        onChange={(e) => setSelectedFeatures({ ...selectedFeatures, fuelType: e.target.value })}
+      >
+        <option value="">Select Fuel Type</option>
+        {/* Extract and map unique fuel types from products array */}
+        {products
+          .filter(product => product.category === 'vehicles' && product.features.fuelType)
+          .map(product => product.features.fuelType)
+          .filter((value, index, self) => self.indexOf(value) === index)
+          .map((fuelType, index) => (
+            <option key={index} value={fuelType}>{fuelType}</option>
+          ))}
+      </select>
+    </>
+  );
+  const apartmentFilterOptions = (
+    <>
+      <select
+        className="border border-gray-300 rounded-md p-2 mr-2"
+        value={selectedFeatures.numberOfRooms || ""}
+        onChange={(e) => setSelectedFeatures({ ...selectedFeatures, numberOfRooms: e.target.value })}
+      >
+        <option value="">Select BHK</option>
+        {/* Extract and map unique manufacturer names from products array */}
+        {products
+          .filter(product => product.category === 'apartments' && product.features.numberOfRooms)
+          .map(product => product.features.numberOfRooms)
+          .filter((value, index, self) => self.indexOf(value) === index)
+          .map((numberOfRooms, index) => (
+            <option key={index} value={numberOfRooms}>{numberOfRooms}</option>
+          ))}
+      </select>
+      <select
+        className="border border-gray-300 rounded-md p-2 mr-2"
+        value={selectedFeatures.PropertyType || ""}
+        onChange={(e) => setSelectedFeatures({ ...selectedFeatures, PropertyType: e.target.value })}
+      >
+        <option value="">Select Property Type</option>
+        {/* Extract and map unique fuel types from products array */}
+        {products
+          .filter(product => product.category === 'apartments' && product.features.PropertyType)
+          .map(product => product.features.PropertyType)
+          .filter((value, index, self) => self.indexOf(value) === index)
+          .map((PropertyType, index) => (
+            <option key={index} value={PropertyType}>{PropertyType}</option>
+          ))}
+      </select>
+    </>
+  );
+  const shopFilterOptions = (
+    <>
+      <select
+        className="border border-gray-300 rounded-md p-2 mr-2"
+        value={selectedFeatures.numberOfRooms || ""}
+        onChange={(e) => setSelectedFeatures({ ...selectedFeatures, numberOfRooms: e.target.value })}
+      >
+        <option value="">Select Shop Type</option>
+        {/* Extract and map unique manufacturer names from products array */}
+        {products
+          .filter(product => product.category === 'shops' && product.features.ShopType)
+          .map(product => product.features.ShopType)
+          .filter((value, index, self) => self.indexOf(value) === index)
+          .map((ShopType, index) => (
+            <option key={index} value={ShopType}>{ShopType}</option>
+          ))}
+      </select>
+    
+    </>
+  );
+  const productFilterOptions = (
+    <>
+      <select
+        className="border border-gray-300 rounded-md p-2 mr-2"
+        value={selectedFeatures.ProductType || ""}
+        onChange={(e) => setSelectedFeatures({ ...selectedFeatures, numberOfRooms: e.target.value })}
+      >
+        <option value="">Select Product Type</option>
+        {/* Extract and map unique manufacturer names from products array */}
+        {products
+          .filter(product => product.category === 'shops' && product.features.ProductType)
+          .map(product => product.features.ProductType)
+          .filter((value, index, self) => self.indexOf(value) === index)
+          .map((ProductType, index) => (
+            <option key={index} value={ProductType}>{ProductType}</option>
+          ))}
+      </select>
+    
+    </>
+  );
 
   return (
-    <div className="flex flex-col gap-10 items-center px-4 py-8">
+    <div>
+
+    
       <Navbar />
-      <div className="mt-[100px]  flex flex-col overflow-x-auto lg:overflow-y-hidden overflow-y-scroll border-solid border-black border-[2px] rounded-md   justify-center items-center h-auto">
+    <div className="flex flex-col gap-10 items-center px-4 py-8">
+      <div className="mt-[100px] flex flex-col overflow-x-auto lg:overflow-y-hidden overflow-y-scroll border-solid border-black border-[2px] rounded-md justify-center items-center h-auto">
         <div>
           <select
             className="border border-gray-300 rounded-md p-2 mr-2"
@@ -170,16 +259,17 @@ const vehicleFilterOptions = (
             ))}
           </select>
           {selectedCategory === 'vehicles' && vehicleFilterOptions}
+          {selectedCategory === 'apartments' && apartmentFilterOptions}
+          {selectedCategory === 'shops' && shopFilterOptions}
         </div>
-        
       </div>
       <div>
         {filteredProducts.length === 0 ? (
           <p>No products found.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" >
             {filteredProducts.map((product) => (
-              <div key={product._id} className="bg-white shadow-md flex flex-col gap-5 rounded-lg p-4">
+              <div key={product._id} onClick={() => navigate(`/product/${product._id}`)} className="bg-white shadow-md flex flex-col gap-5 rounded-lg p-4">
                 <Slider {...settings}>
                   {product.images.map((image, index) => (
                     <img
@@ -192,7 +282,7 @@ const vehicleFilterOptions = (
                   {product.videos.map((video, index) => (
                     <video
                       key={index}
-                      src={`${import.meta.env.VITE_REACT_APP_VIDEO_ENDPOINT}/${video}`}
+                      src={`${import.meta.env.VITE_REACT_APP_IMAGE_ENDPOINT}/${video}`}
                       alt={product.name}
                       className="object-cover h-48 w-full"
                       controls
@@ -220,6 +310,8 @@ const vehicleFilterOptions = (
           </div>
         )}
       </div>
+    </div>
+      <Footer/>
     </div>
   );
 };
