@@ -28,12 +28,7 @@ const Navbar = () => {
           >
             Admin Dashboard
           </a>
-          <a
-            href="/profile"
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Profile
-          </a>
+          
         </>
       );
     } else if (userRole === "seller") {
@@ -45,28 +40,14 @@ const Navbar = () => {
           >
             Seller Dashboard
           </a>
-          <a
-            href="/profile"
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Profile
-          </a>
+          
         </>
       );
-    } else {
-      return (
-        <a
-          href="/profile"
-          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-        >
-          Profile
-        </a>
-      );
-    }
+    } 
   };
 
   return (
-    <div className="flex items-center justify-between px-16 h-auto top-0  gap-5  fixed  w-screen bg-white text-black font-bold">
+    <div className="flex items-center justify-between px-16 h-auto z-50 top-0  gap-5  fixed  w-screen bg-white text-black font-bold">
       <div>
         <img
           src="/favicon.ico"

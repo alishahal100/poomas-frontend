@@ -11,29 +11,43 @@ const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [similarProducts, setSimilarProducts] = useState([]);
+  const whatsappNumber = '+971527045765'; // Replace with the actual WhatsApp number
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/products/${id}`);
         setProduct(response.data);
+        console.log("product:", response.data);
       } catch (error) {
         console.error('Error fetching product:', error);
       }
     };
 
+    fetchProduct();
+  }, [id]);
+
+  useEffect(() => {
     const fetchSimilarProducts = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/products?category=${product.category}`);
-        setSimilarProducts(response.data.filter(item => item._id !== id));
-      } catch (error) {
-        console.error('Error fetching similar products:', error);
+      if (product && product.category) {
+        try {
+          const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/products?category=${product.category}`);
+          setSimilarProducts(response.data.filter(item => item._id !== id));
+        } catch (error) {
+          console.error('Error fetching similar products:', error);
+        }
       }
     };
 
-    fetchProduct();
-    if (product) fetchSimilarProducts();
-  }, [id, product]);
+    fetchSimilarProducts();
+  }, [product, id]);
+
+  const handleContactSeller = () => {
+    const productLink = window.location.href;
+    const message = `Hi, I'm interested in your product: ${product.name}. Here is the link: ${productLink}`;
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
 
   if (!product) return <div>Loading...</div>;
 
@@ -86,7 +100,12 @@ const ProductDetails = () => {
                 ))}
               </ul>
             </div>
-            <button className="bg-blue-500 text-white p-2 mt-4 rounded">Contact Seller</button>
+            <button 
+              className="bg-blue-500 text-white p-2 mt-4 rounded" 
+              onClick={handleContactSeller}
+            >
+              Contact Seller
+            </button>
           </div>
         </div>
         <div className="mt-8">

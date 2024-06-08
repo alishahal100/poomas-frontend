@@ -54,9 +54,10 @@ const ProductPage = ({ location }) => {
   useEffect(() => {
     // Define price range options based on your requirement
     const priceRanges = [
-      { label: '$0 - $1000', value: '0-1000' },
-      { label: '$1001 - $5000', value: '1001-5000' },
-      { label: '$5001 - $10000', value: '5001-10000' },
+      { label: '0 - 10000', value: '0-10000' },
+      { label: '10000 - 25000', value: '10001-25000' },
+      { label: '25000 - 50000', value: '25001-50000' },
+      { label: '50000 - Above', value: '50000-10000000' },
       // Add more price range options based on your requirement
     ];
     setAllPriceRanges(priceRanges);
@@ -289,7 +290,7 @@ const ProductPage = ({ location }) => {
                     />
                   ))}
                 </Slider>
-                <div>
+                <div  onClick={() => navigate(`/product/${product._id}`)}  className=" mt-5">
                   <h2 className="text-lg font-semibold">{product.name}</h2>
                   <p className="text-sm text-gray-500">{product.description}</p>
                   <p className="text-lg font-bold mt-2">{product.Price} AED</p>

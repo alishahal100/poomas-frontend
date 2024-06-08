@@ -31,7 +31,7 @@ function App() {
           <Route path='/seller-dashboard' element={<SellerDashboard/>} />
           <Route path='/add-product' element={<AddProduct/>} />
           <Route path='/products' element={<ProductPage location={location} />} />
-          <Route path="/product/:id" component={<ProductDetails/>} />
+          <Route path="/product/:id" element={<ProductDetails/>} />
           
         </Routes>
       </Router>
