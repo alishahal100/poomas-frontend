@@ -71,7 +71,7 @@ const ProductDetails = () => {
                   key={index}
                   src={`${import.meta.env.VITE_REACT_APP_IMAGE_ENDPOINT}/${image}`}
                   alt={product.name}
-                  className="object-cover h-64 w-full"
+                  className="object-contain h-96 md:h-[500px] w-full"
                 />
               ))}
               {product.videos.map((video, index) => (
@@ -79,7 +79,7 @@ const ProductDetails = () => {
                   key={index}
                   src={`${import.meta.env.VITE_REACT_APP_IMAGE_ENDPOINT}/${video}`}
                   alt={product.name}
-                  className="object-cover h-64 w-full"
+                  className="object-contain h-96 sm:h-[600px] w-full"
                   controls
                 />
               ))}
