@@ -3,7 +3,7 @@ import Axios from 'axios';
 import { jwtDecode } from "jwt-decode";
 
 const LoginForm = () => {
-  const [mobileNumber, setMobileNumber] = useState('+91');
+  const [mobileNumber, setMobileNumber] = useState('+971');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
 
@@ -18,16 +18,22 @@ const LoginForm = () => {
                 setRole(userRole);
                 localStorage.setItem('token', token);
                 localStorage.setItem('role', userRole);
-                if (userRole === 'admin') {
-                    window.location.href = '/';
-                } else if (userRole === 'seller') {
+                if (userRole === 'admin' || userRole === 'seller') {
                     window.location.href = '/';
                 }
             } else {
                 console.error('Login failed: Response data is undefined');
             }
         } catch (error) {
-            console.error('Login failed:', error.message);
+            if (error.response) {
+                if (error.response.status === 404) {
+                    alert("Invalid mobile number or password");
+                } else {
+                    alert("An error occurred during login. Please try again.");
+                }
+            } else {
+                console.error('Login failed:', error.message);
+            }
         }
     };
 

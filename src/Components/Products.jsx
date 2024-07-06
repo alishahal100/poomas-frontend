@@ -16,6 +16,7 @@ const ProductPage = ({ location }) => {
   const [selectedFeatures, setSelectedFeatures] = useState({});
   const [allCategories, setAllCategories] = useState([]);
   const [allCities, setAllCities] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [allPriceRanges, setAllPriceRanges] = useState([]);
   const query = new URLSearchParams(location.search).get("query");
   const navigate = useNavigate()
@@ -35,6 +36,8 @@ const ProductPage = ({ location }) => {
         console.log("video", products.map((video) => video.videos));
       } catch (error) {
         console.error("Error fetching products:", error);
+      }finally {
+        setLoading(false); // Set loading to false when data fetching is complete
       }
     };
 

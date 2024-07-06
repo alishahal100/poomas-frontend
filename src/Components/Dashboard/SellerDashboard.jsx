@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useHistory from react-router-dom
 import { jwtDecode } from "jwt-decode";
 
 const EditProductModal = ({ isOpen, onClose, product }) => {
@@ -36,6 +36,7 @@ const EditProductModal = ({ isOpen, onClose, product }) => {
       alert('Failed to update product');
     }
     setLoading(false);
+
   };
 
   return (
@@ -74,10 +75,19 @@ const SellerDashboard = () => {
   const [activeMenu, setActiveMenu] = useState('myProducts');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const userId = jwtDecode(localStorage.getItem("token")).userId;
+  const navigate = useNavigate(); // Get history object from react-router-dom
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    console.log("token for user ; " ,token)
+    if (!token) {
+      alert("Please login to access dashboard")
+      navigate('/signin');
+       // Redirect to sign-in page if token is not present
+      return;
+    }
+
+    const userId = jwtDecode(token).userId;
     axios.get(`${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/get-products`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -87,8 +97,11 @@ const SellerDashboard = () => {
       const userProducts = res.data.filter(product => product.createdBy === userId);
       setMyProducts(userProducts);
     })
-    .catch(err => console.error(err));
-  }, []);
+    .catch(err => {
+      console.error(err);
+      // Handle error, possibly show a message or redirect to an error page
+    });
+  }, [history]);
 
   const handleDelete = async (productId) => {
     try {
@@ -128,15 +141,14 @@ const SellerDashboard = () => {
       <div className="w-3/4 h-full p-8 overflow-y-auto">
         {activeMenu === 'myProducts' && (
           <>
-           <div className='flex justify-between mb-3'>
-
-<h1 className="text-white text-2xl mb-4">Products</h1>
-<div className="flex justify-end">
-<Link to="/add-product" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-Add Product
-</Link>
-</div>
-</div>
+            <div className='flex justify-between mb-3'>
+              <h1 className="text-white text-2xl mb-4">Products</h1>
+              <div className="flex justify-end">
+                <Link to="/add-product" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                  Add Product
+                </Link>
+              </div>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full table-auto bg-gray-700 text-white rounded">
                 <thead>

@@ -223,6 +223,7 @@ const AdminDashboard = () => {
                     <th className="border border-white px-4 py-2">Product ID</th>
                     <th className="border border-white px-4 py-2">Created At</th>
                     <th className="border border-white px-4 py-2">Created By</th>
+                    <th className="border border-white px-4 py-2">Owner Mobile Number</th>
                     <th className="border border-white px-4 py-2">Verified</th>
                     <th className="border border-white px-4 py-2">Actions</th>
                   </tr>
@@ -233,6 +234,7 @@ const AdminDashboard = () => {
                       <td className="border border-white px-4 py-2">{product.name}</td>
                       <td className="border border-white px-4 py-2">{product._id}</td>
                       <td className="border border-white px-4 py-2">{product.createdAt}</td>
+                      <td className="border border-white px-4 py-2">{product.createdBy}</td>
                       <td className="border border-white px-4 py-2">{product.createdBy}</td>
                       {
                         product.isApproved === true ? <td className="border border-white px-4 py-2">Yes</td> : <td className="border border-white px-4 py-2">No</td>

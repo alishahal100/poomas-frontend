@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const FilterBar = ({
   categories,
-  selectedCategory,
   selectedFeatures,
   onCategoryChange,
   onFeatureChange,
@@ -10,6 +10,19 @@ const FilterBar = ({
   searchQuery,
   products,
 }) => {
+  const location = useLocation();
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const category = params.get('category');
+    if (category) {
+      setSelectedCategory(category);
+    } else {
+      setSelectedCategory(""); // Default to "All"
+    }
+  }, [location.search]);
+
   const getCategoryProperties = () => {
     if (!selectedCategory) return [];
     // Filter products based on selected category
@@ -38,7 +51,10 @@ const FilterBar = ({
           id="category"
           className="border border-gray-300 rounded px-2 py-1"
           value={selectedCategory}
-          onChange={onCategoryChange}
+          onChange={(e) => {
+            setSelectedCategory(e.target.value);
+            onCategoryChange(e);
+          }}
         >
           <option value="">All</option>
           {categories.map((category) => (
