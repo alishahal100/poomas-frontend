@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
 import { jwtDecode } from "jwt-decode";
-
-
-
 
 const EditProductModal = ({ isOpen, onClose, product }) => {
   const [editedProduct, setEditedProduct] = useState({ ...product });
   const [loading, setLoading] = useState(false);
   const userRole = jwtDecode(localStorage.getItem("token")).role;
 
-  // Update the editedProduct state when the product prop changes
   useEffect(() => {
     setEditedProduct({ ...product });
   }, [product]);
@@ -65,10 +60,6 @@ const EditProductModal = ({ isOpen, onClose, product }) => {
             <label htmlFor="category" className="block text-gray-700">Category:</label>
             <input type="text" id="category" name="category" value={editedProduct.category} onChange={handleChange} className="w-full border border-gray-300 rounded-md px-4 py-2" />
           </div>
-          {/* Render features input fields */}
-          {/* Add more fields as needed */}
-
-          {/* Render isApproved field for admin */}
           {userRole === 'admin' && (
             <div className="mb-4">
               <label htmlFor="isApproved" className="block text-gray-700">Approved:</label>
@@ -78,7 +69,6 @@ const EditProductModal = ({ isOpen, onClose, product }) => {
               </select>
             </div>
           )}
-
           <div className="flex justify-end">
             <button type="button" onClick={onClose} className="mr-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Cancel</button>
             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" disabled={loading}>Save</button>
@@ -89,27 +79,18 @@ const EditProductModal = ({ isOpen, onClose, product }) => {
   );
 };
 
-
-
-
-
-
-
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
   const [myProducts, setMyProducts] = useState([]);
-  const [activeMenu, setActiveMenu] = useState('users'); // State to track active menu item
+  const [activeMenu, setActiveMenu] = useState('users');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const userRole = jwtDecode(localStorage.getItem("token")).role;
   const userId = jwtDecode(localStorage.getItem("token")).userId;
 
   useEffect(() => {
-    // Fetch JWT token from local storage
     const token = localStorage.getItem('token');
-
-    // Fetch users data with JWT token included in headers
     axios.get(`${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/admin/users`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -118,7 +99,6 @@ const AdminDashboard = () => {
       .then(res => setUsers(res.data))
       .catch(err => console.error(err));
 
-    // Fetch all products data with JWT token included in headers
     axios.get(`${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/get-products`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -126,172 +106,107 @@ const AdminDashboard = () => {
     })
       .then(res => {
         setProducts(res.data);
-        // Filter user's products
         const userProducts = res.data.filter(product => product.createdBy === userId);
         setMyProducts(userProducts);
       })
       .catch(err => console.error(err));
   }, []);
 
+  const handleDelete = async (productId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/products/remove/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setMyProducts(prevProducts => prevProducts.filter(product => product._id !== productId));
+      alert('Product deleted successfully');
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert('Failed to delete product');
+    }
+  };
 
- const handleDelete = async (productId) => {
-  try {
-    const token = localStorage.getItem('token');
-    await axios.delete(`${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/products/remove/${productId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    // Filter out the deleted product from the state
-    setMyProducts(prevProducts => prevProducts.filter(product => product._id !== productId));
-    alert('Product deleted successfully');
-  } catch (error) {
-    console.error('Error deleting product:', error);
-    alert('Failed to delete product');
-  }
-};
-
-  // Function to handle editing a product
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
 
-  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedProduct(null);
   };
 
   return (
-    <div className="flex h-screen bg-gray-900">
-      <div className="w-1/4 h-full bg-gray-800 p-8 overflow-y-auto">
-        <h1 className="text-white text-xl mb-4">Dashboard</h1>
-        <ul className="text-white">
-          <li className={`mb-2 cursor-pointer hover:text-gray-300 ${activeMenu === 'users' && 'text-gray-300'}`} onClick={() => setActiveMenu('users')}>Users</li>
-          <li className={`mb-2 cursor-pointer hover:text-gray-300 ${activeMenu === 'products' && 'text-gray-300'}`} onClick={() => setActiveMenu('products')}>All Products</li>
-          <li className={`mb-2 cursor-pointer hover:text-gray-300 ${activeMenu === 'myProducts' && 'text-gray-300'}`} onClick={() => setActiveMenu('myProducts')}>My Products</li>
-        </ul>
-      </div>
-      <div className="w-3/4 h-full p-8 overflow-y-auto">
-        {/* Render Users */}
-        {activeMenu === 'users' && (
-          <>
-            <h1 className="text-white text-2xl mb-4">Users</h1>
-            <div className="overflow-x-auto">
-              <table className="w-full table-auto bg-gray-700 text-white rounded">
-                <thead>
-                  <tr>
-                    <th className="border border-white px-4 py-2">Name</th>
-                    <th className="border border-white px-4 py-2">Mobile Number</th>
-                    <th className="border border-white px-4 py-2">Created At</th>
-                    <th className="border border-white px-4 py-2">User ID</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map(user => (
-                    <tr key={user._id}>
-                      <td className="border border-white px-4 py-2">{user.username}</td>
-                      <td className="border border-white px-4 py-2">{user.mobileNumber}</td>
-                      <td className="border border-white px-4 py-2">{user.createdAt}</td>
-                      <td className="border border-white px-4 py-2">{user._id}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
-
-        {/* Render All Products */}
-        {activeMenu === 'products' && (
-          <>
-          <div className='flex justify-between mb-3'>
-
-            <h1 className="text-white text-2xl mb-4">Products</h1>
-            <div className="flex justify-end">
-          <Link to="/add-product" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Add Product
-          </Link>
-        </div>
-          </div>
-            <div className="overflow-x-auto">
-              <table className="w-full table-auto bg-gray-700 text-white rounded">
-                <thead>
-                  <tr>
-                    <th className="border border-white px-4 py-2">Name</th>
-                    <th className="border border-white px-4 py-2">Product ID</th>
-                    <th className="border border-white px-4 py-2">Created At</th>
-                    <th className="border border-white px-4 py-2">Created By</th>
-                    <th className="border border-white px-4 py-2">Owner Mobile Number</th>
-                    <th className="border border-white px-4 py-2">Verified</th>
-                    <th className="border border-white px-4 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map(product => (
-                    <tr key={product._id}>
-                      <td className="border border-white px-4 py-2">{product.name}</td>
-                      <td className="border border-white px-4 py-2">{product._id}</td>
-                      <td className="border border-white px-4 py-2">{product.createdAt}</td>
-                      <td className="border border-white px-4 py-2">{product.createdBy}</td>
-                      <td className="border border-white px-4 py-2">{product.createdBy}</td>
-                      {
-                        product.isApproved === true ? <td className="border border-white px-4 py-2">Yes</td> : <td className="border border-white px-4 py-2">No</td>
-                      }
-                      <td className='border border-white px-4 py-2'><button onClick={() => handleEdit(product)} className=' bg-blue-500 text-white font-semibold w-20 h-8'>Edit</button></td>
-                      
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              
-            </div>
-          </>
-        )}
-      
-        {/* Render My Products */}
-        {activeMenu === 'myProducts' && (
-  <>
-    <h1 className="text-white text-2xl mb-4">My Products</h1>
-    <div className="overflow-x-auto">
-      <table className="w-full table-auto bg-gray-700 text-white rounded">
-        <thead>
-          <tr>
-            <th className="border border-white px-4 py-2">Name</th>
-            <th className="border border-white px-4 py-2">Product ID</th>
-            <th className="border border-white px-4 py-2">Created At</th>
-            <th className="border border-white px-4 py-2">Created By</th>
-            <th className="border border-white px-4 py-2">Verified</th>
-            <th className="border border-white px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {myProducts.map(product => (
-            <tr key={product._id}>
-              <td className="border border-white px-4 py-2">{product.name}</td>
-              <td className="border border-white px-4 py-2">{product._id}</td>
-              <td className="border border-white px-4 py-2">{product.createdAt}</td>
-              <td className="border border-white px-4 py-2">{product.createdBy}</td>
-              <td className="border border-white px-4 py-2">{product.isApproved ? 'Yes' : 'No'}</td>
-              <td className='border border-white px-4 py-2'>
-                <button onClick={() => handleEdit(product)} className='bg-blue-500 text-white font-semibold w-20 h-8 mr-2'>Edit</button>
-                <button onClick={() => handleDelete(product._id)} className='bg-red-500 text-white font-semibold w-20 h-8'>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="bg-gray-900 min-h-screen">
+      <header className="bg-gray-800 p-4 fixed w-full top-0 z-10">
+  <nav className="flex justify-between items-center">
+    <h1 className="text-white text-xl">Dashboard</h1>
+    <div>
+      <ul className="flex space-x-4 text-white">
+        <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'users' && 'text-gray-300'}`} onClick={() => setActiveMenu('users')}>Users</li>
+        <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'products' && 'text-gray-300'}`} onClick={() => setActiveMenu('products')}>All Products</li>
+        <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'myProducts' && 'text-gray-300'}`} onClick={() => setActiveMenu('myProducts')}>My Products</li>
+      </ul>
     </div>
-  </>
-)}
+  </nav>
+</header>
 
-      </div>
+      <main className="p-8 pt-20">
+        {activeMenu === 'users' && (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {users.map(user => (
+              <div key={user._id} className="bg-white rounded-lg shadow-md p-4">
+                <h2 className="text-xl font-semibold">{user.username}</h2>
+                <p className="text-gray-700">Mobile Number: {user.mobileNumber}</p>
+                <p className="text-gray-700">Created At: {user.createdAt}</p>
+                <p className="text-gray-700">User ID: {user._id}</p>
+              </div>
+            ))}
+          </div>
+        )}
 
-      <EditProductModal isOpen={isModalOpen} onClose={closeModal} product={selectedProduct} />
+        {activeMenu === 'products' && (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {products.map(product => (
+              <div key={product._id} className="bg-white rounded-lg shadow-md p-4">
+                <h2 className="text-xl font-semibold">{product.name}</h2>
+                <p className="text-gray-700">Product ID: {product._id}</p>
+                <p className="text-gray-700">Created At: {product.createdAt}</p>
+                <p className="text-gray-700">Created By: {product.createdBy}</p>
+                <p className="text-gray-700">Verified: {product.isApproved ? 'Yes' : 'No'}</p>
+                <div className="mt-4 flex justify-end">
+                  <button onClick={() => handleEdit(product)} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Edit</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeMenu === 'myProducts' && (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {myProducts.map(product => (
+              <div key={product._id} className="bg-white rounded-lg shadow-md p-4">
+                <h2 className="text-xl font-semibold">{product.name}</h2>
+                <p className="text-gray-700">Product ID: {product._id}</p>
+                <p className="text-gray-700">Created At: {product.createdAt}</p>
+                <p className="text-gray-700">Verified: {product.isApproved ? 'Yes' : 'No'}</p>
+                <div className="mt-4 flex justify-end">
+                  <button onClick={() => handleEdit(product)} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Edit</button>
+                  <button onClick={() => handleDelete(product._id)} className="ml-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Delete</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+
+      {isModalOpen && (
+        <EditProductModal isOpen={isModalOpen} onClose={closeModal} product={selectedProduct} />
+      )}
     </div>
   );
 };
 
 export default AdminDashboard;
-

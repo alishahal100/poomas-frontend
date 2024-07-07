@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; // Import useHistory from react-router-dom
+import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 
 const EditProductModal = ({ isOpen, onClose, product }) => {
@@ -36,7 +36,6 @@ const EditProductModal = ({ isOpen, onClose, product }) => {
       alert('Failed to update product');
     }
     setLoading(false);
-
   };
 
   return (
@@ -75,15 +74,13 @@ const SellerDashboard = () => {
   const [activeMenu, setActiveMenu] = useState('myProducts');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate(); // Get history object from react-router-dom
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    console.log("token for user ; " ,token)
     if (!token) {
-      alert("Please login to access dashboard")
+      alert("Please login to access dashboard");
       navigate('/signin');
-       // Redirect to sign-in page if token is not present
       return;
     }
 
@@ -99,9 +96,9 @@ const SellerDashboard = () => {
     })
     .catch(err => {
       console.error(err);
-      // Handle error, possibly show a message or redirect to an error page
+      alert('Failed to fetch products');
     });
-  }, [history]);
+  }, [navigate]);
 
   const handleDelete = async (productId) => {
     try {
@@ -130,55 +127,43 @@ const SellerDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900">
-      <div className="w-1/4 h-full bg-gray-800 p-8 overflow-y-auto">
-        <h1 className="text-white text-xl mb-4">Dashboard</h1>
-        
-        <ul className="text-white">
-          <li className={`mb-2 cursor-pointer hover:text-gray-300 ${activeMenu === 'myProducts' && 'text-gray-300'}`} onClick={() => setActiveMenu('myProducts')}>My Products</li>
-        </ul>
-      </div>
-      <div className="w-3/4 h-full p-8 overflow-y-auto">
+    <div className="flex flex-col h-screen">
+      {/* Fixed Header */}
+      <header className="bg-gray-800 p-4 fixed w-full top-0 z-10">
+        <nav className="flex justify-between items-center">
+          <h1 className="text-white text-xl">Dashboard</h1>
+          <div>
+            <ul className="flex space-x-4 text-white">
+              <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'myProducts' && 'text-gray-300'}`} onClick={() => setActiveMenu('myProducts')}>My Products</li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto bg-gray-900 pt-20">
         {activeMenu === 'myProducts' && (
-          <>
-            <div className='flex justify-between mb-3'>
-              <h1 className="text-white text-2xl mb-4">Products</h1>
-              <div className="flex justify-end">
-                <Link to="/add-product" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                  Add Product
-                </Link>
-              </div>
+          <div className="p-8">
+            <h1 className="text-white text-2xl mb-4">My Products</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {myProducts.map(product => (
+                <div key={product._id} className="bg-white rounded-lg shadow-md p-4">
+                  <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
+                  <p className="text-gray-700 mb-4">{product.description}</p>
+                  <p className="text-gray-700">Location: {product.location}</p>
+                  <p className="text-gray-700">Category: {product.category}</p>
+                  <div className="flex justify-end mt-4">
+                    <button onClick={() => handleEdit(product)} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Edit</button>
+                    <button onClick={() => handleDelete(product._id)} className="bg-red-500 text-white px-4 py-2 ml-2 rounded-md hover:bg-red-600">Delete</button>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full table-auto bg-gray-700 text-white rounded">
-                <thead>
-                  <tr>
-                    <th className="border border-white px-4 py-2">Name</th>
-                    <th className="border border-white px-4 py-2">Product ID</th>
-                    <th className="border border-white px-4 py-2">Created At</th>
-                    <th className="border border-white px-4 py-2">Verified</th>
-                    <th className="border border-white px-4 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {myProducts.map(product => (
-                    <tr key={product._id}>
-                      <td className="border border-white px-4 py-2">{product.name}</td>
-                      <td className="border border-white px-4 py-2">{product._id}</td>
-                      <td className="border border-white px-4 py-2">{product.createdAt}</td>
-                      <td className="border border-white px-4 py-2">{product.isApproved ? 'Yes' : 'No'}</td>
-                      <td className="border border-white px-4 py-2">
-                        <button onClick={() => handleEdit(product)} className="bg-blue-500 text-white font-semibold w-20 h-8 mr-2">Edit</button>
-                        <button onClick={() => handleDelete(product._id)} className="bg-red-500 text-white font-semibold w-20 h-8">Delete</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
+          </div>
         )}
       </div>
+
+      {/* Edit Product Modal */}
       <EditProductModal isOpen={isModalOpen} onClose={closeModal} product={selectedProduct} />
     </div>
   );
