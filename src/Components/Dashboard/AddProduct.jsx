@@ -139,10 +139,10 @@ const AddProduct = () => {
 
         {/* Input fields for images and videos */}
         <label htmlFor="image-upload" className="block font-medium mb-2">Upload Images</label>
-<input id="image-upload" className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="file" accept="image/*" multiple onChange={handleImageChange} />
+<input id="image-upload" className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" name='images' type="file" accept="image/*" multiple onChange={handleImageChange} />
 
 <label htmlFor="video-upload" className="block font-medium mb-2">Upload Videos</label>
-<input id="video-upload" className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" type="file" accept="video/*" multiple onChange={handleVideoChange} />
+<input id="video-upload" className="w-full border border-gray-300 rounded-md mb-4 px-4 py-2" name='videos' type="file" accept="video/*" multiple onChange={handleVideoChange} />
 
         {/* Submit button */}
         <button className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" type="submit" disabled={loading}>Add Product</button>
