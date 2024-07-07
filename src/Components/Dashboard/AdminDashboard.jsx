@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import { MenuIcon } from 'lucide-react';
 
 const EditProductModal = ({ isOpen, onClose, product }) => {
   const [editedProduct, setEditedProduct] = useState({ ...product });
   const [loading, setLoading] = useState(false);
   const userRole = jwtDecode(localStorage.getItem("token")).role;
+
 
   useEffect(() => {
     setEditedProduct({ ...product });
@@ -88,7 +90,8 @@ const AdminDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const userRole = jwtDecode(localStorage.getItem("token")).role;
   const userId = jwtDecode(localStorage.getItem("token")).userId;
-
+  const [isNavOpen, setIsNavOpen] = useState(false); // State to handle nav items visibility
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios.get(`${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/admin/users`, {
@@ -138,20 +141,32 @@ const AdminDashboard = () => {
     setSelectedProduct(null);
   };
 
+
+  const showNavItems = () => {
+    setIsNavOpen(!isNavOpen); // Toggle the nav items visibility
+  };
   return (
     <div className="bg-gray-900 min-h-screen">
-      <header className="bg-gray-800 p-4 fixed w-full top-0 z-10">
-  <nav className="flex justify-between items-center">
-    <h1 className="text-white text-xl">Dashboard</h1>
-    <div>
-      <ul className="flex space-x-4 text-white">
-        <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'users' && 'text-gray-300'}`} onClick={() => setActiveMenu('users')}>Users</li>
-        <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'products' && 'text-gray-300'}`} onClick={() => setActiveMenu('products')}>All Products</li>
-        <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'myProducts' && 'text-gray-300'}`} onClick={() => setActiveMenu('myProducts')}>My Products</li>
-      </ul>
-    </div>
-  </nav>
-</header>
+    <header className="bg-gray-800 p-4 fixed w-full top-0 z-10">
+        <nav className="flex justify-between items-center">
+          <h1 className="text-white text-xl">Dashboard</h1>
+          <div>
+            <ul className={`lg:flex space-x-4 text-white ${isNavOpen ? 'flex flex-col absolute top-16 gap-5 left-0 h-auto w-full bg-gray-800 p-4 lg:relative lg:flex-row lg:space-x-4' : 'hidden lg:flex'}`}>
+              <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'users' && 'text-gray-300'}`} onClick={() => setActiveMenu('users')}>Users</li>
+              <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'products' && 'text-gray-300'}`} onClick={() => setActiveMenu('products')}>All Products</li>
+              <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'myProducts' && 'text-gray-300'}`} onClick={() => setActiveMenu('myProducts')}>My Products</li>
+              <li className="cursor-pointer hover:text-gray-300">
+                <Link to="/add-product" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add Product</Link>
+              </li>
+            </ul>
+            <div className="lg:hidden">
+              <button className="text-white" onClick={showNavItems}>
+                <MenuIcon size={24} />
+              </button>
+            </div>
+          </div>
+        </nav>
+      </header>
 
       <main className="p-8 pt-20">
         {activeMenu === 'users' && (

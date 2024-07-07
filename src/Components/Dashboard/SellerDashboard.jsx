@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import {  MenuIcon } from 'lucide-react';
 
 const EditProductModal = ({ isOpen, onClose, product }) => {
   const [editedProduct, setEditedProduct] = useState({ ...product });
@@ -75,6 +76,7 @@ const SellerDashboard = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const [isNavOpen, setIsNavOpen] = useState(false); // State to handle nav items visibility
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -115,7 +117,11 @@ const SellerDashboard = () => {
       alert('Failed to delete product');
     }
   };
+  const showNavItems = () => {
+    setIsNavOpen(!isNavOpen); // Toggle the nav items visibility
+  };
 
+  
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -133,9 +139,17 @@ const SellerDashboard = () => {
         <nav className="flex justify-between items-center">
           <h1 className="text-white text-xl">Dashboard</h1>
           <div>
-            <ul className="flex space-x-4 text-white">
-              <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'myProducts' && 'text-gray-300'}`} onClick={() => setActiveMenu('myProducts')}>My Products</li>
+            <ul className={`lg:flex space-x-4 text-white ${isNavOpen ? 'flex flex-col absolute top-16 gap-5 left-0 h-auto w-full bg-gray-800 p-4 lg:relative lg:flex-row lg:space-x-4' : 'hidden lg:flex'}`}>
+          <li className={`cursor-pointer hover:text-gray-300 ${activeMenu === 'myProducts' && 'text-gray-300'}`} onClick={() => setActiveMenu('myProducts')}>My Products</li>
+              <li className="cursor-pointer hover:text-gray-300">
+                <Link to="/add-product" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add Product</Link>
+              </li>
             </ul>
+            <div className="lg:hidden">
+              <button className="text-white" onClick={showNavItems}>
+                <MenuIcon size={24} />
+              </button>
+            </div>
           </div>
         </nav>
       </header>

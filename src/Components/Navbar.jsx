@@ -59,7 +59,7 @@ const Navbar = () => {
         <span className="cursor-pointer" onClick={handleDropdownToggle}>
            {token ? `Welcome, ${jwtDecode(token).username}` : 
           (
-            <div className="flex gap-3">
+            <div className="flex gap-1">
               <a href="/signin" className="text-blue-500">
                 Sign In
               </a>
