@@ -19,6 +19,7 @@ const ProductDetails = () => {
         const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/products/${id}`);
         setProduct(response.data);
         console.log("product:", response.data);
+        console.log(product.name);
       } catch (error) {
         console.error('Error fetching product:', error);
       }
@@ -62,22 +63,22 @@ const ProductDetails = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto mt-[150px] p-4">
         <div className="flex flex-col md:flex-row gap-8">
           <div className="md:w-1/2">
             <Slider {...settings}>
               {product.images.map((image, index) => (
                 <img
                   key={index}
-                  src={`${import.meta.env.VITE_REACT_APP_IMAGE_ENDPOINT}/${image}`}
-                  alt={product.name}
+                  src={image}  
+                   alt={product.name}
                   className="object-contain h-96 md:h-[500px] w-full"
                 />
               ))}
               {product.videos.map((video, index) => (
                 <video
                   key={index}
-                  src={`${import.meta.env.VITE_REACT_APP_IMAGE_ENDPOINT}/${video}`}
+                  src={video}  
                   alt={product.name}
                   className="object-contain h-96 sm:h-[600px] w-full"
                   controls
@@ -85,10 +86,10 @@ const ProductDetails = () => {
               ))}
             </Slider>
           </div>
-          <div className="md:w-1/2">
+          <div className="md:w-1/2 mt-20">
             <h2 className="text-2xl font-bold">{product.name}</h2>
-            <p className="text-lg text-gray-700">{product.description}</p>
-            <p className="text-xl font-semibold mt-2">{product.Price} AED</p>
+            <p className="lg:text-lg text-gray-700 mt-5 ">{product.description}</p>
+            <p className="text-xl font-semibold mt-5">{product.Price} AED</p>
             <div className="mt-4">
               <h3 className="text-lg font-medium">Features:</h3>
               <ul className="text-gray-600">

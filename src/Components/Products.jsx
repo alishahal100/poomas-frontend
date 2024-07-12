@@ -19,6 +19,7 @@ const ProductPage = ({ location }) => {
   const [loading, setLoading] = useState(false);
   const [allPriceRanges, setAllPriceRanges] = useState([]);
   const query = new URLSearchParams(location.search).get("query");
+  const category = new URLSearchParams(location.search).get("category");
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -28,6 +29,9 @@ const ProductPage = ({ location }) => {
 
         if (query) {
           endpoint = `${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/products/search?query=${query}`;
+        }
+        if (category) {
+          endpoint = `${import.meta.env.VITE_REACT_APP_API_ENDPOINT}/products/search?category=${category}`;
         }
 
         const response = await axios.get(endpoint);
@@ -278,7 +282,7 @@ const ProductPage = ({ location }) => {
                   {product.images.map((image, index) => (
                     <img
                       key={index}
-                      src={`${import.meta.env.VITE_REACT_APP_IMAGE_ENDPOINT}/${image}`}
+                      src={image}
                       alt={product.name}
                       className="object-cover h-48 w-full"
                     />
@@ -286,7 +290,7 @@ const ProductPage = ({ location }) => {
                   {product.videos.map((video, index) => (
                     <video
                       key={index}
-                      src={`${import.meta.env.VITE_REACT_APP_IMAGE_ENDPOINT}/${video}`}
+                      src={video}
                       alt={product.name}
                       className="object-cover h-48 w-full"
                       controls
